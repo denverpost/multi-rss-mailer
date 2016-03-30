@@ -10,3 +10,6 @@ To do this we need:
 3. The last time we checked each feed for new items.
 
 This code will manage the list of feeds and the last time each feed was checked, it will not manage the list of email subscribers.
+
+## Example usage
+
