@@ -26,9 +26,9 @@ class RecentFeed:
     def get(self, url):
         """ Wrapper for API requests. Take a URL, return a json array.
             #>>> articles = rf.recently()
-            >>> url = 'http://rss.denverpost.com/mngi/rss/CustomRssServlet/36/213601.xml'
             >>> args = build_parser([])
             >>> rf = RecentFeed(args)
+            >>> url = 'http://rss.denverpost.com/mngi/rss/CustomRssServlet/36/213601.xml'
             >>> rf.get(url)
             True
             >>> p = rf.parse()
@@ -44,6 +44,8 @@ class RecentFeed:
 
     def parse(self, xml=None):
         """ Turn the xml into an object.
+            >>> args = build_parser([])
+            >>> rf = RecentFeed(args)
             """
         if xml is None:
             xml = self.xml
@@ -51,6 +53,8 @@ class RecentFeed:
 
     def recently(self):
         """ Return a feedparser entry object for the last X days of feed entries.
+            >>> args = build_parser([])
+            >>> rf = RecentFeed(args)
             """
         items = []
         for item in self.p.entries:
@@ -67,12 +71,19 @@ class RecentFeed:
 
     def url_to_slug(self, url):
         """ Turn a feed url into a string we can use as a filename.
+            >>> args = build_parser([])
+            >>> rf = RecentFeed(args)
+            >>> slugify('http://extras.denverpost.com/app/bill-tracker/updates.atom')
+            'http-extras-denverpost-com-app-bill-tracker-updates-atom'
             """
-        return slugify(url)
+        slug = slugify(url.replace('http', ''))
+        return slug
 
     def check(self, url):
         """ Check each feed to see if there are new items since the last time
             we checked.
+            >>> args = build_parser([])
+            >>> rf = RecentFeed(args)
             """
         directory = os.path.dirname(os.path.realpath(__file__))
         if not os.path.isdir('%s/feeds' % directory):
