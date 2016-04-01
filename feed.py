@@ -4,31 +4,31 @@
 import sys
 import argparse
 import doctest
+import feedparser
+import httplib2
 
 class RecentFeed:
     """ Methods for ingesting and publishing RSS feeds.
         >>> rf = RecentFeed()
         >>> rf.get('http://rss.denverpost.com/mngi/rss/CustomRssServlet/36/213601.xml')
         True
-        >>> rf.parse()
+        >>> p = rf.parse()
         """
 
     def __init__(self, args={}):
+        print(args)
         self.args = args
-        if 'days' not in self.args:
-            self.args['days'] = 0
-        self.days = self.args['days']
+        self.days = self.args.days
 
     def get(self, url):
         """ Wrapper for API requests. Take a URL, return a json array.
+            #>>> articles = rf.recently()
             >>> url = 'http://rss.denverpost.com/mngi/rss/CustomRssServlet/36/213601.xml'
-            >>> parser = build_parser()
-            >>> args = parser.parse_args([url])
+            >>> args = build_parser([])
             >>> rf = RecentFeed(args)
             >>> rf.get(url)
             True
-            >>> rf.parse()
-            #>>> articles = rf.recently()
+            >>> p = rf.parse()
             """
         h = httplib2.Http('.tmp')
         (response, xml) = h.request(url, "GET")
@@ -39,12 +39,12 @@ class RecentFeed:
         self.xml = xml
         return True
 
-    def parse(self):
+    def parse(self, xml=None):
         """ Turn the xml into an object.
             """
-        p = feedparser.parse(self.xml)
-        self.p = p
-        return p
+        if xml is None:
+            xml = self.xml
+        return feedparser.parse(xml)
 
     def recently(self):
         """ Return a feedparser entry object for the last X days of feed entries.
@@ -81,6 +81,8 @@ def build_parser(args):
                                      epilog='')
     parser.add_argument("-v", "--verbose", dest="verbose", default=False, action="store_true",
                         help="Run doctests, display more info.")
+    parser.add_argument("-d", "--days", dest="days", default=0,
+                        help="")
     args = parser.parse_args(args)
     return args
 
