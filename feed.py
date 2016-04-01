@@ -16,9 +16,9 @@ class RecentFeed:
         """
 
     def __init__(self, args={}):
-        print(args)
         self.args = args
-        self.days = self.args.days
+        if 'days' in args:
+            self.days = args.days
 
     def get(self, url):
         """ Wrapper for API requests. Take a URL, return a json array.
