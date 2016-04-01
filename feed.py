@@ -73,10 +73,15 @@ class RecentFeed:
         """ Turn a feed url into a string we can use as a filename.
             >>> args = build_parser([])
             >>> rf = RecentFeed(args)
-            >>> slugify('http://extras.denverpost.com/app/bill-tracker/updates.atom')
-            'http-extras-denverpost-com-app-bill-tracker-updates-atom'
+            >>> rf.url_to_slug('http://extras.denverpost.com/app/bill-tracker/updates.atom')
+            'extras-denverpost-com-app-bill-tracker-updates'
             """
-        slug = slugify(url.replace('http', ''))
+        # Strip the file extension
+        url = url.replace('.atom', '')
+        url = url.replace('.rss', '')
+        url = url.replace('.xml', '')
+        url = url.replace('http', '')
+        slug = slugify(url)
         return slug
 
     def check(self, url):
