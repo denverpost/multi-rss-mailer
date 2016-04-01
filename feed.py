@@ -6,6 +6,9 @@ import argparse
 import doctest
 import feedparser
 import httplib2
+import os
+from slugify import slugify
+
 
 class RecentFeed:
     """ Methods for ingesting and publishing RSS feeds.
@@ -61,6 +64,22 @@ class RecentFeed:
                 print(delta.days, dt)
         self.items = items
         return items
+
+    def url_to_slug(self, url):
+        """ Turn a feed url into a string we can use as a filename.
+            """
+        return slugify(url)
+
+    def check(self, url):
+        """ Check each feed to see if there are new items since the last time
+            we checked.
+            """
+        directory = os.path.dirname(os.path.realpath(__file__))
+        if not os.path.isdir('%s/feeds' % directory):
+            os.mkdir('%s/feeds' % directory)
+
+        slug = self.url_to_slug(self.url)
+        return True
 
 def main(args):
     """ Example usage:
